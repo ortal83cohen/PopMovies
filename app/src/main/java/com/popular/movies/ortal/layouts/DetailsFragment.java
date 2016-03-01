@@ -62,18 +62,19 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (mMovie != null) {
+            Picasso.with(getActivity())
+                    .load(IMAGE_BASE_URL_SMALL + mMovie.poster_path)
+                    .fit().centerCrop()
 
-        Picasso.with(getActivity())
-                .load(IMAGE_BASE_URL_SMALL + mMovie.poster_path)
-                .fit().centerCrop()
-
-                .into(mImageView);
-        mTitle.setText(mMovie.title);
-        mText1.setText(mMovie.release_date);
-        mText2.setText(mMovie.vote_average + "/10");
+                    .into(mImageView);
+            mTitle.setText(mMovie.title);
+            mText1.setText(mMovie.release_date);
+            mText2.setText(mMovie.vote_average + "/10");
 
 //        mText3.setText(mMovie.);
 //        mText4.setText(mMovie.);
-        mOverview.setText(mMovie.overview);
+            mOverview.setText(mMovie.overview);
+        }
     }
 }

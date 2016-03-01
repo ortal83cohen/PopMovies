@@ -75,7 +75,7 @@ public class ListFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
-        initializeView();
+
         mRecyclerView.setOnLoadMoreListener(new EndlessRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -91,6 +91,12 @@ public class ListFragment extends Fragment implements
             }
         });
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initializeView();
     }
 
     private void initializeView() {

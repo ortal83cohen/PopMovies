@@ -1,5 +1,6 @@
 package com.popular.movies.ortal.layouts;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,32 +22,29 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements MovieViewHolder.Listener {
     private static final String FRAGMENT_LIST = "list";
-    private OkHttpClient mHttpClient;
-    private Api mApi;
+    private static final String FRAGMENT_DETAILS = "details";
+    private int mSelectedMovie;
+    private Api mApi; // todo move to application
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initApi();
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ApiConfig cfg = new ApiConfig();
-        cfg.setDebug(BuildConfig.DEBUG);
-        cfg.setLogger(new RetrofitLogger());
-        mApi = new Api(cfg, apiHttpClient());
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, ListFragment.newInstance(),
-                            FRAGMENT_LIST)
-                    .commit();
-        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_list, ListFragment.newInstance(),
+                        FRAGMENT_LIST)
+                .commit();
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -62,42 +60,55 @@ public class MainActivity extends AppCompatActivity implements MovieViewHolder.L
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
     public void onMovieClick(Movie movie, int position) {
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        Fragment fragmentDetails = fragmentManager.findFragmentById(R.id.fragment_container_details);
-        if (fragmentDetails == null) {
-
+        mSelectedMovie = movie.id;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, DetailsFragment.newInstance(movie))
+                    .replace(R.id.fragment_list, DetailsFragment.newInstance(movie), FRAGMENT_DETAILS)
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_details, DetailsFragment.newInstance(movie))
+                    .replace(R.id.fragment_details, DetailsFragment.newInstance(movie), FRAGMENT_DETAILS)
                     .commit();
         }
     }
 
     public Api getApi() {
         return mApi;
+    }// todo move to application
+
+    private void initApi() {//todo move to application
+        if (mApi == null) {
+            ApiConfig cfg = new ApiConfig();
+            cfg.setDebug(BuildConfig.DEBUG);
+            cfg.setLogger(new RetrofitLogger());
+            DefaultHttpClient httpClient = new DefaultHttpClient(this);
+            httpClient.setConnectTimeout(30000, TimeUnit.MILLISECONDS);
+            httpClient.setReadTimeout(30000, TimeUnit.MILLISECONDS);
+            httpClient.interceptors().add(RetrofitLogger.create());
+            mApi = new Api(cfg, httpClient);
+        }
     }
 
-    private OkHttpClient apiHttpClient() {
-        if (mHttpClient == null) {
-            mHttpClient = new DefaultHttpClient(this);
-
-            mHttpClient.setConnectTimeout(999999, TimeUnit.MILLISECONDS);
-            mHttpClient.setReadTimeout(999999, TimeUnit.MILLISECONDS);
-            mHttpClient.interceptors().add(RetrofitLogger.create());
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_DETAILS);
+        if (fragment != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mSelectedMovie = 0;
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_list, new ListFragment(), FRAGMENT_LIST)
+                    .commit();
+        } else {
+            super.onBackPressed();
         }
-        return mHttpClient;
     }
 }
