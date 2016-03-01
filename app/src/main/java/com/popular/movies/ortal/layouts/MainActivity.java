@@ -2,8 +2,10 @@ package com.popular.movies.ortal.layouts;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,13 +18,13 @@ import com.popular.movies.ortal.client.ApiConfig;
 import com.popular.movies.ortal.client.DefaultHttpClient;
 import com.popular.movies.ortal.client.RetrofitLogger;
 import com.popular.movies.ortal.data.Movie;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements MovieViewHolder.Listener {
     private static final String FRAGMENT_LIST = "list";
     private static final String FRAGMENT_DETAILS = "details";
+    private static final String SELECTED_MOVIE = "selected movie";
     private int mSelectedMovie;
     private Api mApi; // todo move to application
 
@@ -34,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements MovieViewHolder.L
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (savedInstanceState != null) {
+            mSelectedMovie = savedInstanceState.getInt(SELECTED_MOVIE);
+        }
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_list, ListFragment.newInstance(),
@@ -71,10 +76,12 @@ public class MainActivity extends AppCompatActivity implements MovieViewHolder.L
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                     .replace(R.id.fragment_list, DetailsFragment.newInstance(movie), FRAGMENT_DETAILS)
                     .commit();
         } else {
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                     .replace(R.id.fragment_details, DetailsFragment.newInstance(movie), FRAGMENT_DETAILS)
                     .commit();
         }
@@ -83,6 +90,13 @@ public class MainActivity extends AppCompatActivity implements MovieViewHolder.L
     public Api getApi() {
         return mApi;
     }// todo move to application
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt(SELECTED_MOVIE, mSelectedMovie);
+
+    }
 
     private void initApi() {//todo move to application
         if (mApi == null) {
