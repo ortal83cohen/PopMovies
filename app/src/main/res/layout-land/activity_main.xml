@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="110dp"
+
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container_details"
+        android:layout_width="110dp"
+
+        android:layout_height="match_parent" />
+
+</LinearLayout>
