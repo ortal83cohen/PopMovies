@@ -4,11 +4,11 @@ This android app is a code sample for using www.themoviedb.org api.
 
 include features:
 
-• Use an Image caching library like Picasso or Glide.
-• Use JobScheduler, Loaders, SQLITE and Content.
-• Use Material Design.
 • Simple movies list and their information.
-• Simple Animation.
-• Naming convention - https://source.android.com/source/code-style.html
+• Use Material Design.
+• Use an Image caching library - Picasso.
+• Use JobScheduler, Loaders, SQLITE and Content.
 • Support Online and Offline usage
+• Simple Animation.
 • Support Tablets 
+• Naming convention - https://source.android.com/source/code-style.html
