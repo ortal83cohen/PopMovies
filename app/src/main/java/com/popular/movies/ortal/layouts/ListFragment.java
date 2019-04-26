@@ -31,8 +31,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import me.tatarka.support.job.JobInfo;
 import me.tatarka.support.job.JobScheduler;
 import retrofit.Response;
@@ -43,9 +41,8 @@ import retrofit.Response;
 public class ListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final int JOB_ID = 1;
-    @Bind(android.R.id.list)
+
     EndlessRecyclerView mRecyclerView;
-    @Bind(R.id.swipe_refresh_layout)
     android.support.v4.widget.SwipeRefreshLayout mRefresh;
     private JobScheduler mJobScheduler;
     private LinearLayoutManager mLayoutManager;
@@ -74,8 +71,9 @@ public class ListFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        ButterKnife.bind(this, view);
 
+        mRecyclerView = view.findViewById(R.id.endlessRecyclerView);
+        mRefresh = view.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView.setOnLoadMoreListener(new EndlessRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {

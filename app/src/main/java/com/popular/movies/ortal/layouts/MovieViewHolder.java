@@ -11,17 +11,13 @@ import com.popular.movies.ortal.R;
 import com.popular.movies.ortal.data.Movie;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 public class MovieViewHolder extends RecyclerView.ViewHolder {
 
     private static final String IMAGE_BASE_URL_SMALL = "http://image.tmdb.org/t/p/w185";
     private final Context mContext;
     private final MovieViewHolder.Listener mListener;
-    @Bind(R.id.image)
+
     public ImageView mImageView;
-    @Bind(android.R.id.title)
     public TextView mTitleView;
     private Movie mItem;
     private int mPosition;
@@ -29,7 +25,8 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     public MovieViewHolder(View v, Context context, MovieViewHolder.Listener listener) {
         super(v);
         mListener = listener;
-        ButterKnife.bind(this, v);
+        mImageView = v.findViewById(R.id.image);
+        mTitleView = v.findViewById(R.id.title);
 
         mContext = context;
     }
